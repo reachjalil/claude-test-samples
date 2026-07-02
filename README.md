@@ -29,7 +29,7 @@ pnpm build
 This repository is configured for Cloudflare Workers Static Assets.
 
 ```bash
-pnpm deploy
+pnpm run deploy
 ```
 
 This site is independent and is not affiliated with, endorsed by, or sponsored by Anthropic.
