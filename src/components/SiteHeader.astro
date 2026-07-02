@@ -1,0 +1,59 @@
+---
+interface Props {
+  activePath?: string;
+}
+
+const { activePath = Astro.url.pathname } = Astro.props as Props;
+
+const navLinks = [
+  { href: "/exam", label: "Practice", match: "/exam" },
+  { href: "/path", label: "Study Path", match: "/path" },
+  { href: "/questions/", label: "Question Bank", match: "/questions" },
+  { href: "/about", label: "About", match: "/about" },
+];
+
+function isActive(path: string, match: string) {
+  return path === match || path.startsWith(`${match}/`);
+}
+---
+
+<div class="site-announcement" role="note">
+  <a href="/disclaimer">
+    Independent Claude practice samples. Not affiliated with Anthropic.
+    <span aria-hidden="true">→</span>
+  </a>
+</div>
+
+<header class="site-topbar">
+  <div class="site-topbar-inner">
+    <a class="site-brand" href="/" aria-label="Sample Claude Exams home">
+      <span class="site-brand-mark" aria-hidden="true">SC</span>
+      <span class="site-brand-copy">
+        <span class="site-brand-name">Sample <span>Claude</span> Exams</span>
+        <span class="site-brand-tag">Practice lab for AI-ready teams</span>
+      </span>
+    </a>
+
+    <nav class="site-nav" aria-label="Primary">
+      {
+        navLinks.map((link) => (
+          <a
+            href={link.href}
+            aria-current={isActive(activePath, link.match) ? "page" : undefined}
+          >
+            {link.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <div class="site-actions">
+      <a class="site-support" href="/exam" aria-label="Start the sample exam">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6"></path>
+        </svg>
+        Start Exam
+      </a>
+    </div>
+  </div>
+</header>

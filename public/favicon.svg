@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Sample Claude Exams">
+  <rect width="64" height="64" rx="12" fill="#030712" />
+  <path d="M18 18h28v8H26v8h16v8H26v4h20v8H18V18Z" fill="#ffffff" />
+  <path d="M46 18h8v36h-8V18Z" fill="#dd8f70" />
+</svg>

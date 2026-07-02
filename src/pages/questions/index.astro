@@ -1,0 +1,68 @@
+---
+import { examBanks } from "../../data/examBank";
+import SiteLayout from "../../layouts/SiteLayout.astro";
+
+const groupedBanks = examBanks.map((bank) => ({
+  ...bank,
+  groupedDomains: bank.domains
+    .map((domain) => ({
+      ...domain,
+      questions: bank.questions.filter((question) => question.domainId === domain.id),
+    }))
+    .filter((domain) => domain.questions.length > 0),
+}));
+---
+
+<SiteLayout
+  title="Question Bank"
+  description="Static index of sample Claude practice questions, answer choices, explanations, scenarios, and study-guide mappings."
+  currentPath="/questions/"
+>
+  <section class="exam-page static-bank-page">
+    <header class="static-page-hero">
+      <p class="source-kicker">Static question bank</p>
+      <h1>Sample Claude Practice Banks</h1>
+      <p>
+        All available forms are generated as static Astro pages. Use the interactive exam for
+        timed practice, or browse each bank directly for focused review and coaching prep.
+      </p>
+      <a class="exam-button is-primary is-compact" href="/exam">Return to exam</a>
+    </header>
+
+    <div class="question-bank-list">
+      {
+        groupedBanks.map((bank) => (
+          <section class="question-bank-form" aria-labelledby={`${bank.bankId}-title`}>
+            <header>
+              <p class="source-kicker">Exam form</p>
+              <h2 id={`${bank.bankId}-title`}>{bank.title}</h2>
+              <p>{bank.description}</p>
+            </header>
+            {bank.groupedDomains.map((domain) => (
+              <section class="question-bank-domain" aria-labelledby={`${bank.bankId}-${domain.id}-title`}>
+                <div>
+                  <h3 id={`${bank.bankId}-${domain.id}-title`}>{domain.label}</h3>
+                  <p>
+                    {domain.description} Sample blueprint weight: {domain.weightPercent}% (
+                    {domain.targetQuestionCount} questions in this 60-question mock).
+                  </p>
+                </div>
+                <ol>
+                  {domain.questions.map((question) => (
+                    <li>
+                      <a href={`/questions/${question.id.toLowerCase()}/`}>
+                        <span>Question {question.sourceOrder}</span>
+                        <strong>{question.id}</strong>
+                        <small>{question.taskStatementIds.join(", ")}</small>
+                      </a>
+                    </li>
+                  ))}
+                </ol>
+              </section>
+            ))}
+          </section>
+        ))
+      }
+    </div>
+  </section>
+</SiteLayout>

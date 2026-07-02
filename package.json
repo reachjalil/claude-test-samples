@@ -1,0 +1,44 @@
+{
+  "name": "claude-test-samples",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Standalone Astro site for unofficial sample Claude exam practice and study paths.",
+  "type": "module",
+  "license": "MIT",
+  "packageManager": "pnpm@10.25.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/reachjalil/claude-test-samples.git"
+  },
+  "bugs": {
+    "url": "https://github.com/reachjalil/claude-test-samples/issues"
+  },
+  "homepage": "https://github.com/reachjalil/claude-test-samples#readme",
+  "scripts": {
+    "data:extract": "node scripts/extract-sample-cert.mjs",
+    "data:build-additional": "node scripts/build-additional-banks.mjs",
+    "data:all": "pnpm run data:extract && pnpm run data:build-additional",
+    "dev": "astro dev",
+    "build": "astro build",
+    "check": "astro check",
+    "preview": "astro preview",
+    "deploy": "pnpm run build && wrangler deploy",
+    "quality": "pnpm run check && pnpm run build"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.8",
+    "@astrojs/react": "^5.0.1",
+    "@tailwindcss/vite": "^4.3.0",
+    "astro": "^6.0.8",
+    "lucide-react": "^1.23.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "tailwindcss": "4.3.0",
+    "typescript": "^5.9.3"
+  },
+  "devDependencies": {
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
+    "wrangler": "^4.107.0"
+  }
+}

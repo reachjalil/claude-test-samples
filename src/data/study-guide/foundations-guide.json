@@ -1,0 +1,877 @@
+{
+  "id": "sample-claude-architecture-foundations-guide",
+  "title": "Sample Claude Architecture Foundations Study Path",
+  "version": "0.1",
+  "lastUpdated": "2025-02-10",
+  "source": {
+    "kind": "local-study-guide-notes",
+    "path": "tmp/CLAUDE_CERT/study-guide-source.txt",
+    "extractedTextPath": "tmp/CLAUDE_CERT/study-guide-extracted.txt",
+    "notes": "Structured, paraphrased from the local PDF guide so site content and question metadata can stay independent of exam UI logic."
+  },
+  "exam": {
+    "audience": "Solution architects and practitioners who design, implement, and evaluate production Claude applications.",
+    "purpose": "Validate practical judgment across Claude Code, Claude Agent SDK, Claude API, Model Context Protocol, agentic design, context management, prompt engineering, and reliability tradeoffs.",
+    "questionFormat": "Scenario-based multiple choice. Each question has one correct answer and three plausible distractors.",
+    "scoring": {
+      "scaledRange": "100-1000",
+      "passingScore": 720,
+      "unansweredPolicy": "Unanswered questions are scored incorrect. There is no penalty for guessing."
+    },
+    "scenarioSelection": {
+      "presentedOnExam": 4,
+      "poolSize": 6
+    },
+    "practiceBank": {
+      "totalQuestions": 60,
+      "durationMinutes": 120,
+      "weightingMethod": "Largest remainder allocation from source domain percentages for a 60-question sample exam."
+    },
+    "candidateExperience": [
+      "Builds agentic applications with the Claude Agent SDK, including multi-agent orchestration, subagent delegation, tools, and hooks.",
+      "Configures Claude Code for team workflows with CLAUDE.md, Agent Skills, MCP server integrations, plan mode, and CI usage.",
+      "Designs MCP tools and resources with clear interfaces, structured errors, and useful boundaries.",
+      "Engineers prompts for structured output using schemas, few-shot examples, extraction patterns, and validation loops.",
+      "Manages context windows across long conversations, large documents, codebase exploration, and multi-agent handoffs.",
+      "Chooses reliability, escalation, and human-review patterns for production Claude systems."
+    ]
+  },
+  "domains": [
+    {
+      "id": "agentic-architecture-orchestration",
+      "number": 1,
+      "label": "Agentic Architecture & Orchestration",
+      "weightPercent": 27,
+      "targetQuestionCount": 16,
+      "description": "Design model-driven agent loops, coordinator-subagent systems, handoffs, hooks, decomposition, and session state.",
+      "taskStatements": [
+        {
+          "id": "1.1",
+          "title": "Design and implement agentic loops for autonomous task execution",
+          "summary": "Use stop reasons and tool results to drive the loop rather than brittle natural-language completion checks.",
+          "knowledge": [
+            "Agent loop lifecycle from Claude request to tool execution to returned tool result.",
+            "How tool results become part of conversation history for the next reasoning step.",
+            "Difference between model-driven tool decisions and preconfigured decision trees."
+          ],
+          "skills": [
+            "Continue on tool_use and terminate on end_turn.",
+            "Append tool results between iterations.",
+            "Avoid natural-language completion heuristics or arbitrary caps as the main stop mechanism."
+          ]
+        },
+        {
+          "id": "1.2",
+          "title": "Orchestrate multi-agent systems with coordinator-subagent patterns",
+          "summary": "Use a coordinator as the routing, aggregation, and recovery hub for isolated specialist agents.",
+          "knowledge": [
+            "Hub-and-spoke coordinator architecture.",
+            "Subagents do not automatically inherit coordinator context.",
+            "Coordinator responsibilities for decomposition, delegation, aggregation, and gap handling."
+          ],
+          "skills": [
+            "Select subagents dynamically based on the problem.",
+            "Partition scope to reduce duplicated or missing coverage.",
+            "Route subagent communication through the coordinator for observability and recovery."
+          ]
+        },
+        {
+          "id": "1.3",
+          "title": "Configure subagent invocation, context passing, and spawning",
+          "summary": "Invoke subagents with Task, explicit context, structured metadata, and role-specific tool restrictions.",
+          "knowledge": [
+            "The Task tool is required for subagent spawning and must be allowed to the coordinator.",
+            "Subagent prompts must include the context they need.",
+            "Agent definitions include descriptions, prompts, and allowed tool sets.",
+            "Forking can explore divergent paths from a shared baseline."
+          ],
+          "skills": [
+            "Pass prior findings directly in subagent prompts.",
+            "Use structured data to preserve content and attribution metadata.",
+            "Spawn parallel subagents with multiple Task calls in one response.",
+            "Prompt coordinators with goals and quality criteria instead of rigid scripts."
+          ]
+        },
+        {
+          "id": "1.4",
+          "title": "Implement multi-step workflows with enforcement and handoff patterns",
+          "summary": "Use deterministic gates for critical workflow order and structured summaries for escalations.",
+          "knowledge": [
+            "Programmatic enforcement is different from prompt guidance.",
+            "Critical business rules need deterministic compliance.",
+            "Handoffs should include root cause, customer or case state, and recommended actions."
+          ],
+          "skills": [
+            "Block downstream tools until prerequisites are satisfied.",
+            "Decompose multi-concern requests before synthesizing a response.",
+            "Compile structured escalation handoffs for humans without transcript access."
+          ]
+        },
+        {
+          "id": "1.5",
+          "title": "Apply Agent SDK hooks for tool call interception and data normalization",
+          "summary": "Use hooks when compliance, normalization, or policy checks must happen reliably outside model discretion.",
+          "knowledge": [
+            "PostToolUse hooks can transform results before model processing.",
+            "Outgoing tool-call hooks can block non-compliant actions.",
+            "Hooks provide deterministic guarantees where prompts only influence behavior probabilistically."
+          ],
+          "skills": [
+            "Normalize timestamps, status codes, and heterogeneous tool payloads.",
+            "Block policy-violating tool calls and route to safer workflows.",
+            "Choose hooks over prompts for guaranteed business-rule compliance."
+          ]
+        },
+        {
+          "id": "1.6",
+          "title": "Design task decomposition strategies for complex workflows",
+          "summary": "Match decomposition style to task shape: fixed chains for predictable reviews, adaptive plans for open-ended investigations.",
+          "knowledge": [
+            "Fixed sequential pipelines versus dynamic adaptive decomposition.",
+            "Prompt chaining for focused review passes.",
+            "Adaptive investigation plans based on intermediate findings."
+          ],
+          "skills": [
+            "Use prompt chaining for predictable multi-aspect reviews.",
+            "Split large reviews into local per-file passes and cross-file integration passes.",
+            "Map open-ended work before creating a prioritized adaptive plan."
+          ]
+        },
+        {
+          "id": "1.7",
+          "title": "Manage session state, resumption, and forking",
+          "summary": "Resume or fork sessions deliberately, and avoid stale tool results by injecting current summaries when needed.",
+          "knowledge": [
+            "Named session resumption with --resume.",
+            "fork_session for independent branches from a shared baseline.",
+            "Resumed sessions need awareness of changed files or stale results.",
+            "Fresh sessions with summaries can be safer than stale resumption."
+          ],
+          "skills": [
+            "Resume named sessions for valid ongoing investigations.",
+            "Fork sessions for parallel strategy comparison.",
+            "Choose resume versus fresh summary based on staleness.",
+            "Tell resumed sessions exactly what changed."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tool-design-mcp-integration",
+      "number": 2,
+      "label": "Tool Design & MCP Integration",
+      "weightPercent": 18,
+      "targetQuestionCount": 11,
+      "description": "Design reliable tools, MCP integrations, structured errors, scoped tool access, and built-in tool usage.",
+      "taskStatements": [
+        {
+          "id": "2.1",
+          "title": "Design effective tool interfaces with clear descriptions and boundaries",
+          "summary": "Tool selection depends heavily on descriptions, names, examples, boundaries, and non-overlapping contracts.",
+          "knowledge": [
+            "Tool descriptions are a primary selection signal.",
+            "Inputs, examples, edge cases, and boundaries improve selection reliability.",
+            "Ambiguous or overlapping descriptions cause misrouting.",
+            "Prompt wording can bias tool selection."
+          ],
+          "skills": [
+            "Write differentiated tool descriptions.",
+            "Rename or split tools when capabilities overlap.",
+            "Review prompts for wording that undermines tool descriptions."
+          ]
+        },
+        {
+          "id": "2.2",
+          "title": "Implement structured error responses for MCP tools",
+          "summary": "Return actionable error categories, retry metadata, and user-safe explanations so agents can recover correctly.",
+          "knowledge": [
+            "MCP isError flag pattern.",
+            "Transient, validation, business, and permission error categories.",
+            "Generic failures prevent useful recovery.",
+            "Retryability must be explicit."
+          ],
+          "skills": [
+            "Return errorCategory, isRetryable, and readable descriptions.",
+            "Mark business-rule errors as non-retryable with customer-safe explanations.",
+            "Recover locally from transient failures where possible.",
+            "Distinguish access failure from valid empty results."
+          ]
+        },
+        {
+          "id": "2.3",
+          "title": "Distribute tools appropriately across agents and configure tool choice",
+          "summary": "Limit each agent to the tools needed for its role and use tool_choice when a tool call must happen.",
+          "knowledge": [
+            "Too many tools degrade model selection reliability.",
+            "Agents misuse tools outside their specialization.",
+            "Scoped tool access improves reliability.",
+            "tool_choice supports auto, any, and forced tool selection."
+          ],
+          "skills": [
+            "Restrict each subagent to role-appropriate tools.",
+            "Replace generic tools with constrained alternatives.",
+            "Provide scoped cross-role tools for frequent simple needs.",
+            "Use forced tool_choice or any when the workflow requires a tool call."
+          ]
+        },
+        {
+          "id": "2.4",
+          "title": "Integrate MCP servers into Claude Code and agent workflows",
+          "summary": "Use project and user MCP scopes, environment expansion, resource catalogs, and clear descriptions to make MCP tools usable.",
+          "knowledge": [
+            "Project-level .mcp.json versus user-level ~/.claude.json.",
+            "Environment variable expansion for credentials.",
+            "Configured MCP servers are discovered together at connection time.",
+            "MCP resources expose catalogs that reduce exploratory calls."
+          ],
+          "skills": [
+            "Configure shared MCP servers in project scope.",
+            "Keep personal or experimental servers in user scope.",
+            "Improve MCP descriptions so agents pick them over weaker built-ins.",
+            "Expose catalogs as MCP resources."
+          ]
+        },
+        {
+          "id": "2.5",
+          "title": "Select and apply built-in tools effectively",
+          "summary": "Choose Read, Write, Edit, Bash, Grep, and Glob based on file search, content search, and edit requirements.",
+          "knowledge": [
+            "Grep searches file contents.",
+            "Glob matches file paths and names.",
+            "Read and Write handle full-file operations.",
+            "Edit needs unique text anchors and may need fallback."
+          ],
+          "skills": [
+            "Use Grep to find callers, imports, and error messages.",
+            "Use Glob for file patterns such as tests.",
+            "Use Read then Write when Edit cannot match uniquely.",
+            "Build codebase understanding incrementally from search to focused reads."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "claude-code-configuration-workflows",
+      "number": 3,
+      "label": "Claude Code Configuration & Workflows",
+      "weightPercent": 20,
+      "targetQuestionCount": 12,
+      "description": "Configure Claude Code memory, rules, skills, commands, plan mode, iterative workflows, and CI behavior.",
+      "taskStatements": [
+        {
+          "id": "3.1",
+          "title": "Configure CLAUDE.md files with hierarchy, scoping, and modular organization",
+          "summary": "Place shared instructions at project scope, keep personal instructions user-scoped, and modularize large memory files.",
+          "knowledge": [
+            "User, project, and directory CLAUDE.md hierarchy.",
+            "User-level settings are not shared through version control.",
+            "@import keeps CLAUDE.md modular.",
+            ".claude/rules can organize topic-specific files."
+          ],
+          "skills": [
+            "Diagnose hierarchy issues across teammates.",
+            "Use imports for relevant standards files.",
+            "Split large instruction files into focused rule files.",
+            "Use /memory to inspect loaded memory."
+          ]
+        },
+        {
+          "id": "3.2",
+          "title": "Create and configure custom slash commands and skills",
+          "summary": "Use repository-scoped commands for team workflows and skills for on-demand, optionally isolated workflows.",
+          "knowledge": [
+            "Project commands live under .claude/commands/ and are version-controlled.",
+            "User commands live under ~/.claude/commands/.",
+            "Skills use SKILL.md frontmatter including context, allowed tools, and argument hints.",
+            "Personal skill variants should avoid affecting teammates."
+          ],
+          "skills": [
+            "Create shared slash commands in the repository.",
+            "Use context: fork to isolate verbose or exploratory skills.",
+            "Restrict skill tools with allowed-tools.",
+            "Add argument-hint for required parameters.",
+            "Choose skills for on-demand workflows and CLAUDE.md for always-loaded standards."
+          ]
+        },
+        {
+          "id": "3.3",
+          "title": "Apply path-specific rules for conditional convention loading",
+          "summary": "Use path-scoped rules and glob patterns to load only the conventions relevant to the file being edited.",
+          "knowledge": [
+            ".claude/rules files can include YAML paths fields.",
+            "Path-scoped rules reduce irrelevant context.",
+            "Glob rules work better than directory instructions when conventions span directories."
+          ],
+          "skills": [
+            "Create rule files with path globs.",
+            "Apply conventions by file type regardless of directory.",
+            "Choose path-specific rules when files are distributed across the codebase."
+          ]
+        },
+        {
+          "id": "3.4",
+          "title": "Determine when to use plan mode vs direct execution",
+          "summary": "Use plan mode for broad, architectural, or uncertain work; direct execution for simple, well-scoped changes.",
+          "knowledge": [
+            "Plan mode supports exploration and design before changes.",
+            "Direct execution fits clear, small changes.",
+            "Explore subagents can isolate verbose discovery."
+          ],
+          "skills": [
+            "Select plan mode for large-scale or multi-file architectural tasks.",
+            "Select direct execution for narrow fixes.",
+            "Use Explore for context-heavy discovery.",
+            "Combine plan mode for investigation with direct implementation."
+          ]
+        },
+        {
+          "id": "3.5",
+          "title": "Apply iterative refinement techniques for progressive improvement",
+          "summary": "Use examples, tests, interview patterns, and targeted iteration to converge on reliable implementation behavior.",
+          "knowledge": [
+            "Concrete input/output examples clarify transformations.",
+            "Test-driven iteration guides improvement with failures.",
+            "Interview patterns surface requirements before building.",
+            "Interacting issues may need one combined message; independent issues can be handled sequentially."
+          ],
+          "skills": [
+            "Provide 2-3 examples for inconsistent transformations.",
+            "Write tests before implementation and iterate from failures.",
+            "Ask design questions in unfamiliar domains.",
+            "Group interacting problems when fixes depend on each other."
+          ]
+        },
+        {
+          "id": "3.6",
+          "title": "Integrate Claude Code into CI/CD pipelines",
+          "summary": "Run Claude Code non-interactively, request structured JSON, avoid duplicate review output, and isolate review context.",
+          "knowledge": [
+            "-p or --print runs Claude Code in non-interactive mode.",
+            "--output-format json and --json-schema enforce structured CI output.",
+            "CLAUDE.md provides project review and testing context.",
+            "Independent review sessions work better than self-review from the generation session."
+          ],
+          "skills": [
+            "Use -p in CI to avoid hangs.",
+            "Use JSON schema output for machine-posted findings.",
+            "Include prior findings when rerunning reviews to avoid duplicates.",
+            "Provide existing tests and standards so generated tests are useful."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "prompt-engineering-structured-output",
+      "number": 4,
+      "label": "Prompt Engineering & Structured Output",
+      "weightPercent": 20,
+      "targetQuestionCount": 12,
+      "description": "Improve precision, use few-shot prompting, enforce schema output, validate retries, batch work, and design review architectures.",
+      "taskStatements": [
+        {
+          "id": "4.1",
+          "title": "Design prompts with explicit criteria to improve precision and reduce false positives",
+          "summary": "Replace vague instructions with categorical criteria, examples, and severity definitions.",
+          "knowledge": [
+            "Explicit criteria work better than vague conservatism.",
+            "False positives undermine developer trust.",
+            "Severity should be defined with concrete examples."
+          ],
+          "skills": [
+            "Define report versus skip categories.",
+            "Disable noisy categories while improving prompts.",
+            "Use concrete examples for severity classification."
+          ]
+        },
+        {
+          "id": "4.2",
+          "title": "Apply few-shot prompting to improve output consistency and quality",
+          "summary": "Use targeted examples to demonstrate format, judgment, ambiguous cases, and extraction behavior.",
+          "knowledge": [
+            "Few-shot examples are strong for consistent actionable output.",
+            "Examples teach ambiguous-case handling.",
+            "Examples help generalize judgment rather than match fixed cases.",
+            "Examples reduce hallucination in extraction tasks."
+          ],
+          "skills": [
+            "Create 2-4 targeted examples.",
+            "Show the desired output format.",
+            "Distinguish acceptable patterns from real issues.",
+            "Demonstrate extraction across varied document formats."
+          ]
+        },
+        {
+          "id": "4.3",
+          "title": "Enforce structured output using tool use and JSON schemas",
+          "summary": "Use tool_use with schemas and appropriate tool_choice settings to guarantee JSON syntax while still validating semantics.",
+          "knowledge": [
+            "Tool use with JSON schemas eliminates JSON syntax errors.",
+            "tool_choice auto, any, and forced selection have different guarantees.",
+            "Schemas do not prevent semantic errors.",
+            "Required, optional, enum, other, and nullable fields shape extraction behavior."
+          ],
+          "skills": [
+            "Define extraction tools with JSON schemas.",
+            "Use tool_choice any or forced tool calls when needed.",
+            "Make fields optional or nullable when sources may omit them.",
+            "Use extensible enums and normalization instructions."
+          ]
+        },
+        {
+          "id": "4.4",
+          "title": "Implement validation, retry, and feedback loops for extraction quality",
+          "summary": "Use specific validation errors for retries and know when retries cannot recover absent source information.",
+          "knowledge": [
+            "Retries work better with specific error feedback.",
+            "Retries cannot invent absent source information reliably.",
+            "Detected patterns support false-positive analysis.",
+            "Semantic validation differs from schema syntax validation."
+          ],
+          "skills": [
+            "Retry with original document, failed extraction, and validation errors.",
+            "Identify retryable versus non-retryable failures.",
+            "Capture detected_pattern for feedback analysis.",
+            "Use self-correction fields such as calculated totals and conflict flags."
+          ]
+        },
+        {
+          "id": "4.5",
+          "title": "Design efficient batch processing strategies",
+          "summary": "Use Message Batches for non-blocking workloads and synchronous calls where latency is required.",
+          "knowledge": [
+            "Message Batches offer lower cost with up to 24-hour processing.",
+            "Batch is suitable for non-blocking work, not blocking checks.",
+            "Batch does not support multi-turn tool calls within one request.",
+            "custom_id correlates requests and responses."
+          ],
+          "skills": [
+            "Match API approach to latency needs.",
+            "Calculate submission frequency against SLA windows.",
+            "Resubmit failed documents by custom_id.",
+            "Refine prompts on samples before large batch runs."
+          ]
+        },
+        {
+          "id": "4.6",
+          "title": "Design multi-instance and multi-pass review architectures",
+          "summary": "Separate generation from review and split large reviews into focused passes to reduce self-review bias and attention dilution.",
+          "knowledge": [
+            "Self-review is limited by retained reasoning context.",
+            "Independent review instances catch issues the generator may miss.",
+            "Multi-pass review reduces attention dilution."
+          ],
+          "skills": [
+            "Use a second independent Claude instance for review.",
+            "Split local file review from cross-file integration review.",
+            "Use confidence reporting only as part of calibrated routing."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "context-management-reliability",
+      "number": 5,
+      "label": "Context Management & Reliability",
+      "weightPercent": 15,
+      "targetQuestionCount": 9,
+      "description": "Preserve facts, manage long context, escalate appropriately, propagate errors, explore codebases, calibrate review, and keep provenance.",
+      "taskStatements": [
+        {
+          "id": "5.1",
+          "title": "Manage conversation context to preserve critical information across long interactions",
+          "summary": "Persist key facts outside lossy summaries and trim verbose tool output before it overwhelms context.",
+          "knowledge": [
+            "Progressive summaries can blur amounts, dates, and commitments.",
+            "Lost-in-the-middle effects hide middle input details.",
+            "Verbose tool results can consume context without adding value.",
+            "Complete conversation history helps coherence."
+          ],
+          "skills": [
+            "Maintain structured case facts.",
+            "Persist multi-issue state separately from summaries.",
+            "Trim tool results to relevant fields.",
+            "Place summaries early and use explicit section headers."
+          ]
+        },
+        {
+          "id": "5.2",
+          "title": "Design effective escalation and ambiguity resolution patterns",
+          "summary": "Escalate on explicit human requests, policy gaps, no-progress states, and ambiguous identity rather than sentiment or self-confidence alone.",
+          "knowledge": [
+            "Escalation triggers include human requests, policy gaps, and inability to progress.",
+            "Straightforward issues may be resolved even when a customer is frustrated unless they request a human.",
+            "Sentiment and self-reported confidence are weak proxies for complexity.",
+            "Multiple matches require clarification."
+          ],
+          "skills": [
+            "Add escalation criteria with examples.",
+            "Honor explicit human-agent requests immediately.",
+            "Acknowledge frustration while resolving straightforward cases.",
+            "Ask for identifiers rather than guessing among multiple matches."
+          ]
+        },
+        {
+          "id": "5.3",
+          "title": "Implement error propagation strategies across multi-agent systems",
+          "summary": "Propagate structured failure context and partial results so coordinators can recover without hiding or overreacting to errors.",
+          "knowledge": [
+            "Structured error context enables recovery decisions.",
+            "Access failures differ from valid empty results.",
+            "Generic errors hide useful recovery context.",
+            "Suppressing errors and terminating on single failures are both anti-patterns."
+          ],
+          "skills": [
+            "Return failure type, attempted query, partial results, and alternatives.",
+            "Distinguish empty successful results from failures.",
+            "Recover locally before escalating.",
+            "Annotate synthesis coverage gaps."
+          ]
+        },
+        {
+          "id": "5.4",
+          "title": "Manage context effectively in large codebase exploration",
+          "summary": "Use scratchpads, subagents, summaries, manifests, and compaction to keep long codebase investigations reliable.",
+          "knowledge": [
+            "Extended sessions can drift toward generic answers.",
+            "Scratchpads persist key findings.",
+            "Subagents isolate verbose exploration.",
+            "Structured state exports support crash recovery."
+          ],
+          "skills": [
+            "Spawn focused exploration subagents.",
+            "Maintain scratchpad files with key findings.",
+            "Summarize before spawning the next exploration phase.",
+            "Load recovery manifests on resume.",
+            "Use /compact when verbose discovery fills context."
+          ]
+        },
+        {
+          "id": "5.5",
+          "title": "Design human review workflows and confidence calibration",
+          "summary": "Validate automation by segment and calibrate confidence thresholds with labeled data before reducing human review.",
+          "knowledge": [
+            "Aggregate accuracy can hide weak segments.",
+            "Stratified sampling detects errors in high-confidence outputs.",
+            "Field-level confidence needs labeled validation calibration.",
+            "Accuracy should be checked by document type and field."
+          ],
+          "skills": [
+            "Sample high-confidence outputs across segments.",
+            "Analyze accuracy by document type and field.",
+            "Calibrate confidence thresholds with labeled sets.",
+            "Route low confidence or ambiguous records to human review."
+          ]
+        },
+        {
+          "id": "5.6",
+          "title": "Preserve information provenance and handle uncertainty in multi-source synthesis",
+          "summary": "Keep claim-source mappings, temporal metadata, and uncertainty labels through synthesis instead of flattening evidence.",
+          "knowledge": [
+            "Summarization can lose source attribution.",
+            "Structured claim-source mappings must survive synthesis.",
+            "Conflicting credible statistics should be annotated, not arbitrarily chosen.",
+            "Temporal data needs publication or collection dates."
+          ],
+          "skills": [
+            "Require claim-source mappings from subagents.",
+            "Separate established findings from contested ones.",
+            "Pass conflicting values to the coordinator with attribution.",
+            "Require publication dates for temporal interpretation.",
+            "Render different content types in appropriate formats."
+          ]
+        }
+      ]
+    }
+  ],
+  "scenarios": [
+    {
+      "id": "customer-support-resolution-agent",
+      "label": "Customer Support Resolution Agent",
+      "summary": "Build a Claude Agent SDK support agent for ambiguous returns, billing disputes, and account issues with MCP tools such as get_customer, lookup_order, process_refund, and escalate_to_human.",
+      "primaryDomainIds": [
+        "agentic-architecture-orchestration",
+        "tool-design-mcp-integration",
+        "context-management-reliability"
+      ]
+    },
+    {
+      "id": "code-generation-with-claude-code",
+      "label": "Code Generation with Claude Code",
+      "summary": "Use Claude Code for generation, refactoring, debugging, documentation, custom slash commands, CLAUDE.md configuration, and plan-mode decisions.",
+      "primaryDomainIds": [
+        "claude-code-configuration-workflows",
+        "context-management-reliability"
+      ]
+    },
+    {
+      "id": "multi-agent-research-system",
+      "label": "Multi-Agent Research System",
+      "summary": "Coordinate web search, document analysis, synthesis, and report generation subagents to produce comprehensive cited reports.",
+      "primaryDomainIds": [
+        "agentic-architecture-orchestration",
+        "tool-design-mcp-integration",
+        "context-management-reliability"
+      ]
+    },
+    {
+      "id": "developer-productivity-with-claude",
+      "label": "Developer Productivity with Claude",
+      "summary": "Build developer tooling for unfamiliar codebases, legacy systems, boilerplate, repetitive tasks, built-in tools, and MCP integrations.",
+      "primaryDomainIds": [
+        "tool-design-mcp-integration",
+        "claude-code-configuration-workflows",
+        "agentic-architecture-orchestration"
+      ]
+    },
+    {
+      "id": "claude-code-for-continuous-integration",
+      "label": "Claude Code for Continuous Integration",
+      "summary": "Integrate Claude Code into CI/CD for automated code review, test generation, and pull-request feedback with actionable low-noise prompts.",
+      "primaryDomainIds": [
+        "claude-code-configuration-workflows",
+        "prompt-engineering-structured-output"
+      ]
+    },
+    {
+      "id": "structured-data-extraction",
+      "label": "Structured Data Extraction",
+      "summary": "Extract structured data from unstructured documents using JSON schemas, validation, retries, edge-case handling, and downstream integration.",
+      "primaryDomainIds": [
+        "prompt-engineering-structured-output",
+        "context-management-reliability"
+      ]
+    }
+  ],
+  "sampleQuestions": [
+    {
+      "id": "guide-sample-1",
+      "scenarioId": "customer-support-resolution-agent",
+      "promptFocus": "The support agent sometimes skips customer verification before order lookup or refund operations.",
+      "correctAnswer": "A",
+      "taskStatementIds": ["1.4"],
+      "learningPoint": "Use a programmatic prerequisite gate when critical business logic requires deterministic tool order."
+    },
+    {
+      "id": "guide-sample-2",
+      "scenarioId": "customer-support-resolution-agent",
+      "promptFocus": "Minimal tool descriptions cause get_customer and lookup_order to be confused for order-related requests.",
+      "correctAnswer": "B",
+      "taskStatementIds": ["2.1"],
+      "learningPoint": "Improve tool descriptions with input formats, examples, edge cases, and boundaries before adding heavier routing infrastructure."
+    },
+    {
+      "id": "guide-sample-3",
+      "scenarioId": "customer-support-resolution-agent",
+      "promptFocus": "Escalation calibration is inverted: simple cases escalate while policy-exception cases are handled autonomously.",
+      "correctAnswer": "A",
+      "taskStatementIds": ["5.2", "4.2"],
+      "learningPoint": "Add explicit escalation criteria with few-shot examples instead of relying on sentiment or model self-confidence."
+    },
+    {
+      "id": "guide-sample-4",
+      "scenarioId": "code-generation-with-claude-code",
+      "promptFocus": "A team-wide custom /review slash command must be available to every developer from the repository.",
+      "correctAnswer": "A",
+      "taskStatementIds": ["3.2"],
+      "learningPoint": "Project-scoped slash commands belong in the repository under .claude/commands/."
+    },
+    {
+      "id": "guide-sample-5",
+      "scenarioId": "code-generation-with-claude-code",
+      "promptFocus": "A monolith-to-microservices restructure spans many files and requires architectural decisions.",
+      "correctAnswer": "A",
+      "taskStatementIds": ["3.4"],
+      "learningPoint": "Use plan mode for large architectural changes that require exploration before edits."
+    },
+    {
+      "id": "guide-sample-6",
+      "scenarioId": "code-generation-with-claude-code",
+      "promptFocus": "Different code areas and test files need conventions loaded automatically by file path.",
+      "correctAnswer": "A",
+      "taskStatementIds": ["3.3"],
+      "learningPoint": "Use .claude/rules/ files with path globs for conventions that span directories or file types."
+    },
+    {
+      "id": "guide-sample-7",
+      "scenarioId": "multi-agent-research-system",
+      "promptFocus": "A report about creative industries misses music, writing, and film because the coordinator decomposed too narrowly.",
+      "correctAnswer": "B",
+      "taskStatementIds": ["1.2", "1.6"],
+      "learningPoint": "When subagents complete assigned tasks but coverage is incomplete, inspect the coordinator's decomposition and scope partitioning."
+    },
+    {
+      "id": "guide-sample-8",
+      "scenarioId": "multi-agent-research-system",
+      "promptFocus": "A web search subagent times out and the coordinator needs enough information to recover intelligently.",
+      "correctAnswer": "A",
+      "taskStatementIds": ["5.3", "2.2"],
+      "learningPoint": "Return structured failure type, attempted query, partial results, and alternatives rather than a generic unavailable status."
+    },
+    {
+      "id": "guide-sample-9",
+      "scenarioId": "multi-agent-research-system",
+      "promptFocus": "The synthesis agent needs frequent simple fact verification without round-tripping through full web-search delegation.",
+      "correctAnswer": "A",
+      "taskStatementIds": ["2.3"],
+      "learningPoint": "Give the synthesis agent a scoped verify_fact tool for common simple checks while routing complex work through the coordinator."
+    },
+    {
+      "id": "guide-sample-10",
+      "scenarioId": "claude-code-for-continuous-integration",
+      "promptFocus": "A CI job hangs because Claude Code is waiting for interactive input.",
+      "correctAnswer": "A",
+      "taskStatementIds": ["3.6"],
+      "learningPoint": "Use claude -p or --print for non-interactive Claude Code execution in automated pipelines."
+    },
+    {
+      "id": "guide-sample-11",
+      "scenarioId": "claude-code-for-continuous-integration",
+      "promptFocus": "A team wants Message Batches cost savings for both pre-merge checks and overnight technical debt reports.",
+      "correctAnswer": "A",
+      "taskStatementIds": ["4.5"],
+      "learningPoint": "Use batch processing for latency-tolerant overnight work, but keep real-time calls for blocking pre-merge checks."
+    },
+    {
+      "id": "guide-sample-12",
+      "scenarioId": "claude-code-for-continuous-integration",
+      "promptFocus": "A single-pass review across 14 files gives uneven and contradictory feedback.",
+      "correctAnswer": "A",
+      "taskStatementIds": ["4.6", "1.6"],
+      "learningPoint": "Split large reviews into per-file local passes and a separate cross-file integration pass."
+    }
+  ],
+  "preparationExercises": [
+    {
+      "id": "exercise-1",
+      "label": "Build a Multi-Tool Agent with Escalation Logic",
+      "objective": "Practice agentic loops, tool integration, structured errors, hooks, escalation, and multi-concern handling.",
+      "domainIds": [
+        "agentic-architecture-orchestration",
+        "tool-design-mcp-integration",
+        "context-management-reliability"
+      ],
+      "steps": [
+        "Define 3-4 MCP tools with differentiated descriptions and boundary conditions.",
+        "Implement an agentic loop driven by stop_reason values.",
+        "Add structured errors with category, retryability, and readable descriptions.",
+        "Use a hook to enforce a business rule and route to escalation.",
+        "Test multi-concern messages and unified response synthesis."
+      ]
+    },
+    {
+      "id": "exercise-2",
+      "label": "Configure Claude Code for a Team Development Workflow",
+      "objective": "Practice CLAUDE.md hierarchy, custom commands, path rules, skills, and MCP integration.",
+      "domainIds": [
+        "claude-code-configuration-workflows",
+        "tool-design-mcp-integration"
+      ],
+      "steps": [
+        "Create project-level CLAUDE.md standards and verify team-shared behavior.",
+        "Create .claude/rules files with path globs for code areas and tests.",
+        "Create a project skill with context: fork and allowed-tools restrictions.",
+        "Configure project and personal MCP servers with credential expansion.",
+        "Compare plan mode and direct execution on tasks of different complexity."
+      ]
+    },
+    {
+      "id": "exercise-3",
+      "label": "Build a Structured Data Extraction Pipeline",
+      "objective": "Practice JSON schemas, tool_use, validation-retry loops, batches, and human review routing.",
+      "domainIds": [
+        "prompt-engineering-structured-output",
+        "context-management-reliability"
+      ],
+      "steps": [
+        "Define extraction schemas with required, optional, enum, other, and nullable fields.",
+        "Retry failed validations with the failed extraction and specific validation errors.",
+        "Add few-shot examples for varied document formats.",
+        "Submit and recover batch work using custom_id correlation.",
+        "Route low-confidence or ambiguous extractions to human review and segment accuracy."
+      ]
+    },
+    {
+      "id": "exercise-4",
+      "label": "Design and Debug a Multi-Agent Research Pipeline",
+      "objective": "Practice subagent orchestration, explicit context passing, error propagation, and provenance-preserving synthesis.",
+      "domainIds": [
+        "agentic-architecture-orchestration",
+        "tool-design-mcp-integration",
+        "context-management-reliability"
+      ],
+      "steps": [
+        "Build a coordinator with at least two subagents and explicit Task access.",
+        "Run parallel subagents through multiple Task calls in one response.",
+        "Require structured claim, source, excerpt, and date metadata.",
+        "Simulate subagent timeout and propagate structured recovery context.",
+        "Test conflicting source data and preserve both values with attribution."
+      ]
+    }
+  ],
+  "appendix": {
+    "technologiesAndConcepts": [
+      "Claude Agent SDK",
+      "Model Context Protocol (MCP)",
+      "Claude Code",
+      "Claude Code CLI",
+      "Claude API",
+      "Message Batches API",
+      "JSON Schema",
+      "Pydantic",
+      "Built-in tools: Read, Write, Edit, Bash, Grep, Glob",
+      "Few-shot prompting",
+      "Prompt chaining",
+      "Context window management",
+      "Session management",
+      "Confidence scoring"
+    ],
+    "inScope": [
+      "Agentic loop implementation",
+      "Multi-agent orchestration",
+      "Subagent context management",
+      "Tool interface design",
+      "MCP tool and resource design",
+      "MCP server configuration",
+      "Error handling and propagation",
+      "Escalation decision-making",
+      "CLAUDE.md configuration",
+      "Custom commands and skills",
+      "Plan mode versus direct execution",
+      "Iterative refinement",
+      "Structured output through tool_use",
+      "Few-shot prompting",
+      "Batch processing",
+      "Context window optimization",
+      "Human review workflows",
+      "Information provenance"
+    ],
+    "outOfScope": [
+      "Fine-tuning Claude models or training custom models",
+      "Claude API authentication, billing, or account management",
+      "Detailed implementation of specific languages or frameworks beyond tool and schema configuration",
+      "Deploying or hosting MCP server infrastructure",
+      "Claude internal architecture, training process, or model weights",
+      "Constitutional AI, RLHF, or safety training methods",
+      "Embedding models or vector database implementation details",
+      "Computer use automation",
+      "Vision or image analysis",
+      "Streaming API or server-sent event implementation",
+      "Rate limits, quotas, or API pricing calculations",
+      "OAuth, API key rotation, or authentication protocol details",
+      "Specific cloud provider configuration",
+      "Performance benchmarking or model comparison metrics",
+      "Prompt caching implementation details beyond knowing it exists",
+      "Token counting algorithms or tokenization specifics"
+    ],
+    "preparationRecommendations": [
+      "Build a Claude Agent SDK agent with a complete tool-calling loop, errors, sessions, subagents, and context passing.",
+      "Configure Claude Code for a real project with CLAUDE.md hierarchy, path rules, skills, and an MCP server.",
+      "Design and test MCP tools with differentiated descriptions and structured errors.",
+      "Build a structured extraction pipeline with schemas, retries, nullable fields, and Message Batches.",
+      "Practice few-shot prompts, explicit review criteria, and multi-pass review architecture.",
+      "Study context management patterns such as fact extraction, scratchpads, and subagent delegation.",
+      "Review escalation and human-in-the-loop patterns for policy gaps, explicit human requests, and calibrated confidence routing.",
+      "Complete the practice exam and study explanations after each answer."
+    ]
+  }
+}

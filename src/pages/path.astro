@@ -1,0 +1,147 @@
+---
+import { examBank, examBanks } from "../data/examBank";
+import { studyGuide } from "../data/studyGuide";
+import SiteLayout from "../layouts/SiteLayout.astro";
+
+const activeDomains = examBank.domains
+  .map((domain) => ({
+    ...domain,
+    count: examBank.questions.filter((question) => question.domainId === domain.id).length,
+  }))
+  .filter((domain) => domain.count > 0);
+---
+
+<SiteLayout
+  title="Study Path"
+  description="A practical Claude study path covering domains, task statements, scenarios, preparation exercises, and sample exam themes."
+>
+  <section class="exam-page">
+    <header class="page-intro">
+      <span class="exam-page-eyebrow">Learning path</span>
+      <h1 class="exam-page-title">{studyGuide.title}</h1>
+      <p class="section-lede">
+        The blueprint behind every sample question: domain weights, task-statement knowledge and
+        skills, scenarios, preparation exercises, and scope boundaries. Use it to turn a score into
+        a practical coaching plan.
+      </p>
+    </header>
+
+    <section class="guide-overview-panel" aria-labelledby="guide-title">
+      <header class="guide-overview-header">
+        <div>
+          <p class="source-kicker">Study guide blueprint</p>
+          <h2 id="guide-title">Domains &amp; task statements</h2>
+          <p>
+            Domain weights give the practice bank its shape. Each task statement maps to the
+            knowledge and skills assessed in that domain.
+          </p>
+        </div>
+        <dl class="guide-facts">
+          <div>
+            <dt>Passing score</dt>
+            <dd>{studyGuide.exam.scoring.passingScore}</dd>
+          </div>
+          <div>
+            <dt>Scale</dt>
+            <dd>{studyGuide.exam.scoring.scaledRange}</dd>
+          </div>
+          <div>
+            <dt>Scenarios</dt>
+            <dd>{studyGuide.exam.scenarioSelection.presentedOnExam}/{studyGuide.exam.scenarioSelection.poolSize}</dd>
+          </div>
+        </dl>
+      </header>
+
+      <div class="guide-domain-grid">
+        {
+          studyGuide.domains.map((domain) => (
+            <article>
+              <header>
+                <span>Domain {domain.number}</span>
+                <strong>{domain.weightPercent}%</strong>
+              </header>
+              <h3>{domain.label}</h3>
+              <p>{domain.description}</p>
+              <ol>
+                {domain.taskStatements.map((task) => (
+                  <li>
+                    <b>{task.id}</b>
+                    <span>{task.title}</span>
+                  </li>
+                ))}
+              </ol>
+            </article>
+          ))
+        }
+      </div>
+
+      <div class="guide-split-grid">
+        <section aria-labelledby="scenarios-title">
+          <h3 id="scenarios-title">Scenario Pool</h3>
+          <div class="scenario-list">
+            {
+              studyGuide.scenarios.map((scenario) => (
+                <article>
+                  <strong>{scenario.label}</strong>
+                  <p>{scenario.summary}</p>
+                </article>
+              ))
+            }
+          </div>
+        </section>
+
+        <section aria-labelledby="exercises-title">
+          <h3 id="exercises-title">Preparation Exercises</h3>
+          <div class="scenario-list">
+            {
+              studyGuide.preparationExercises.map((exercise) => (
+                <article>
+                  <strong>{exercise.label}</strong>
+                  <p>{exercise.objective}</p>
+                </article>
+              ))
+            }
+          </div>
+        </section>
+
+        <section aria-labelledby="sample-title">
+          <h3 id="sample-title">Guide Sample Themes</h3>
+          <div class="scenario-list">
+            {
+              studyGuide.sampleQuestions.map((sample) => (
+                <article>
+                  <strong>{sample.promptFocus}</strong>
+                  <p>
+                    Answer {sample.correctAnswer}: {sample.learningPoint}
+                  </p>
+                </article>
+              ))
+            }
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section class="source-panel" aria-labelledby="source-title">
+      <div>
+        <p class="source-kicker">Question bank</p>
+        <h2 id="source-title">{examBanks.length} available exam form{examBanks.length === 1 ? "" : "s"}</h2>
+        <p>
+          Content is stored as standalone JSON banks under
+          <code>src/data/question-banks/</code>. Browse every question in the
+          <a href="/questions/">question-bank browser</a>, or sit a full mock on the
+          <a href="/exam">exam page</a>.
+        </p>
+      </div>
+      <div class="domain-chip-grid" aria-label="Covered domains">
+        {activeDomains.map((domain) => (
+          <span>
+            <strong>{domain.count}/{domain.targetQuestionCount}</strong>
+            {domain.label}
+            <small>{domain.weightPercent}% sample blueprint weight</small>
+          </span>
+        ))}
+      </div>
+    </section>
+  </section>
+</SiteLayout>

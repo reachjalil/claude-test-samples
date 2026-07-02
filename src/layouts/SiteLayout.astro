@@ -1,0 +1,96 @@
+---
+import SiteHeader from "../components/SiteHeader.astro";
+import "../styles/global.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+  currentPath?: string;
+}
+
+const {
+  title = "Sample Claude Exams",
+  description =
+    "Independent sample Claude exam practice with timed exams, static question review, study paths, explanations, and privacy-first local progress.",
+  currentPath = Astro.url.pathname,
+} = Astro.props as Props;
+
+const siteUrl = Astro.site ?? new URL("https://sampleclaudeexams.com");
+const canonicalUrl = new URL(currentPath, siteUrl).toString();
+const siteName = "Sample Claude Exams";
+const pageTitle = title === siteName ? title : `${title} | ${siteName}`;
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: siteName,
+  url: new URL("/", siteUrl).toString(),
+  applicationCategory: "EducationalApplication",
+  operatingSystem: "Web",
+  description,
+  isAccessibleForFree: true,
+};
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#030712" />
+    <meta name="color-scheme" content="light" />
+    <link rel="canonical" href={canonicalUrl} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={siteName} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta
+      name="keywords"
+      content="Claude exam practice, sample Claude exams, Claude certification practice, Claude Architect practice, AI learning platform"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&display=swap"
+    />
+    <script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />
+  </head>
+  <body data-site-theme="sample-claude-exams">
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <SiteHeader activePath={currentPath} />
+    <main id="main-content">
+      <slot />
+    </main>
+    <footer class="site-footer">
+      <div class="site-footer-inner">
+        <div class="site-footer-brand">
+          <strong>Sample <span>Claude</span> Exams</strong>
+          <p>
+            Independent practice material for people building Claude fluency inside AI-ready
+            teams.
+          </p>
+        </div>
+        <nav aria-label="Footer">
+          <a href="/exam">Practice</a>
+          <a href="/path">Study path</a>
+          <a href="/questions/">Question bank</a>
+          <a href="/disclaimer">Disclaimer</a>
+          <a href="/privacy">Privacy</a>
+          <a href="/terms">Terms</a>
+        </nav>
+        <p class="site-footer-disclaimer">
+          This site is independent and is not affiliated with, endorsed by, or sponsored by
+          Anthropic. Claude and Anthropic are referenced for nominative educational purposes.
+        </p>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,0 +1,25 @@
+---
+import PracticeExam from "../components/PracticeExam";
+import { examBank, examBanks } from "../data/examBank";
+import SiteLayout from "../layouts/SiteLayout.astro";
+---
+
+<SiteLayout
+  title="Practice Exam"
+  description="Take a timed sample Claude exam, untimed practice, targeted weakest-domain drills, or flashcards with scoring and explanations."
+>
+  <section id="practice" class="exam-page">
+    <PracticeExam banks={examBanks} initialBankId={examBank.bankId} client:load />
+
+    <noscript>
+      <section class="noscript-panel">
+        <h2>JavaScript required for the interactive exam</h2>
+        <p>
+          The question bank is static, but answer selection, scoring, flagging, and review mode
+          need client-side state. You can still browse every question in the
+          <a href="/questions/">question bank</a>.
+        </p>
+      </section>
+    </noscript>
+  </section>
+</SiteLayout>

@@ -1,0 +1,137 @@
+---
+import { examBank, examBanks } from "../data/examBank";
+import SiteLayout from "../layouts/SiteLayout.astro";
+
+const { totalQuestions, durationMinutes } = examBank.settings;
+const domainCount = examBank.domains.length;
+
+const featureCards = [
+  {
+    title: "Timed exam mode",
+    body:
+      "Rehearse a full-length session with a timer, answer palette, skipped-question tracking, and locked review after submission.",
+  },
+  {
+    title: "Practice and targeted drills",
+    body:
+      "Switch into untimed practice, then use weakest-domain drills to focus on the topics that need attention.",
+  },
+  {
+    title: "Static question review",
+    body:
+      "Browse every question, answer choice, explanation, scenario, and study-guide mapping without starting a session.",
+  },
+];
+
+const companionSteps = [
+  "Use the study path to align the team on the Claude concepts that matter.",
+  "Run the sample exam to reveal practical weak spots in agents, tools, context, and reliability.",
+  "Turn the score breakdown into a focused enablement plan before building with customers.",
+];
+---
+
+<SiteLayout
+  title="Sample Claude Exams"
+  description="Independent sample Claude exam practice for teams building Claude fluency as part of a practical AI learning program."
+>
+  <section class="site-container hero hero-centered">
+    <div class="hero-copy">
+      <p class="hero-eyebrow">Independent AI learning companion</p>
+      <h1 class="hero-title">
+        Sample <span>Claude</span> exams <span class="hero-title-tail">for AI-ready teams</span>
+      </h1>
+      <p class="hero-lede">
+        A privacy-first practice platform for people preparing to work with Claude in real
+        projects. Use it alongside an AI enablement program to turn abstract training into
+        measurable readiness.
+      </p>
+      <div class="hero-actions">
+        <a class="hero-cta is-primary" href="/exam">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M5 12h14m-6-6 6 6-6 6"></path>
+          </svg>
+          Start practice exam
+        </a>
+        <a class="hero-cta is-secondary" href="/path">View study path</a>
+      </div>
+      <p class="hero-reg">
+        Unofficial educational material. Not affiliated with Anthropic. For official Claude
+        learning and registration, use Anthropic's own channels.
+      </p>
+    </div>
+
+    <aside class="product-preview" aria-label="Practice platform preview">
+      <div class="preview-window">
+        <div class="preview-window-bar">
+          <span></span><span></span><span></span>
+          <strong>Sample Claude Exams</strong>
+        </div>
+        <div class="preview-score">
+          <span>Readiness score</span>
+          <strong>720+</strong>
+        </div>
+        <div class="preview-grid">
+          <div><strong>{examBanks.length}</strong><span>forms</span></div>
+          <div><strong>{totalQuestions}</strong><span>questions/form</span></div>
+          <div><strong>{durationMinutes}</strong><span>minutes</span></div>
+          <div><strong>{domainCount}</strong><span>domains</span></div>
+        </div>
+        <div class="preview-bars" aria-hidden="true">
+          <span style="--bar: 82%"></span>
+          <span style="--bar: 68%"></span>
+          <span style="--bar: 74%"></span>
+          <span style="--bar: 58%"></span>
+          <span style="--bar: 79%"></span>
+        </div>
+      </div>
+    </aside>
+  </section>
+
+  <section class="site-container section-block">
+    <span class="section-chip">Companion learning layer</span>
+    <h2 class="section-title">Built for teams moving from AI interest to AI execution</h2>
+    <p class="section-lede">
+      The site is designed to sit next to a broader AI transformation program: train the team,
+      identify the starting point, practice under pressure, and turn score data into the next
+      learning sprint.
+    </p>
+    <div class="process-strip">
+      {companionSteps.map((step, index) => (
+        <article>
+          <span>{String(index + 1).padStart(2, "0")}</span>
+          <p>{step}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="site-container section-block">
+    <span class="section-chip">Full practice site</span>
+    <h2 class="section-title">Everything needed for a serious sample exam loop</h2>
+    <div class="why-grid">
+      {featureCards.map((card) => (
+        <article class="why-card">
+          <span class="why-card-icon" aria-hidden="true">✓</span>
+          <h3>{card.title}</h3>
+          <p>{card.body}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="site-container section-block">
+    <div class="cta-band trust-band">
+      <span class="section-chip">Clear boundaries</span>
+      <h2>Independent, transparent, and privacy-first</h2>
+      <p>
+        Practice progress is stored in your browser local storage. The public site does not need an
+        account, does not process payments, and does not present itself as official Anthropic exam
+        material.
+      </p>
+      <div class="hero-actions">
+        <a class="hero-cta is-primary" href="/exam">Take the sample exam</a>
+        <a class="hero-cta is-secondary" href="/disclaimer">Read the disclaimer</a>
+      </div>
+    </div>
+  </section>
+</SiteLayout>

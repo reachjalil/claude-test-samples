@@ -1,0 +1,150 @@
+---
+import { examBanks, examBanksById } from "../../data/examBank";
+import type { ExamQuestion } from "../../data/examTypes";
+import {
+  studyGuideScenariosById,
+  studyGuideTasksById,
+} from "../../data/studyGuide";
+import SiteLayout from "../../layouts/SiteLayout.astro";
+
+type Props = {
+  question: ExamQuestion;
+  bankId: string;
+};
+
+export function getStaticPaths() {
+  return examBanks.flatMap((bank) =>
+    bank.questions.map((question) => ({
+      params: { id: question.id.toLowerCase() },
+      props: { bankId: bank.bankId, question },
+    }))
+  );
+}
+
+const { bankId, question } = Astro.props as Props;
+const bank = examBanksById.get(bankId) ?? examBanks[0];
+const domain = bank.domains.find((item) => item.id === question.domainId);
+const scenario = studyGuideScenariosById.get(question.scenarioId);
+const scenarioLabel =
+  scenario?.label ??
+  question.scenarioLabel ??
+  question.scenarioId
+    .split("-")
+    .map((part) => `${part.charAt(0).toUpperCase()}${part.slice(1)}`)
+    .join(" ");
+const taskStatements = question.taskStatementIds.map((taskId) =>
+  studyGuideTasksById.get(taskId)
+);
+const currentIndex = bank.questions.findIndex((item) => item.id === question.id);
+const previousQuestion = bank.questions[currentIndex - 1];
+const nextQuestion = bank.questions[currentIndex + 1];
+
+const escapeHtml = (value: string) =>
+  value.replace(/[&<>"']/g, (character) => {
+    const entities: Record<string, string> = {
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;",
+    };
+
+    return entities[character] ?? character;
+  });
+
+const formatExamText = (value: string) =>
+  escapeHtml(value).replace(/`([^`]+)`/g, "<code>$1</code>");
+---
+
+<SiteLayout
+  title={`${question.id} - Sample Claude Practice Question`}
+  description={`Static review page for ${question.id} from the Sample Claude Exams question bank.`}
+  currentPath={`/questions/${question.id.toLowerCase()}/`}
+>
+  <article class="exam-page static-question-page">
+    <nav class="static-question-nav" aria-label="Question navigation">
+      <a class="exam-button is-compact" href="/questions/">Question bank</a>
+      <div>
+        {
+          previousQuestion && (
+            <a class="exam-button is-compact" href={`/questions/${previousQuestion.id.toLowerCase()}/`}>
+              Previous
+            </a>
+          )
+        }
+        {
+          nextQuestion && (
+            <a class="exam-button is-compact" href={`/questions/${nextQuestion.id.toLowerCase()}/`}>
+              Next
+            </a>
+          )
+        }
+      </div>
+    </nav>
+
+    <section class="static-question-card">
+      <header>
+        <p class="source-kicker">Static review</p>
+        <h1>Question {question.sourceOrder}</h1>
+        <span>{bank.title}</span>
+        <span>{question.id}</span>
+        {domain && (
+          <strong>
+            Domain {domain.number}: {domain.label} ({domain.weightPercent}%)
+          </strong>
+        )}
+      </header>
+      <p class="static-question-prompt" set:html={formatExamText(question.prompt)} />
+
+      <aside class="static-guide-card" aria-label="Study guide mapping">
+        <div>
+          <p class="source-kicker">Study guide focus</p>
+          <h2>{question.guideSummary}</h2>
+        </div>
+        <dl>
+          <div>
+            <dt>Scenario</dt>
+            <dd>{scenarioLabel}</dd>
+          </div>
+          <div>
+            <dt>Task statements</dt>
+            <dd>
+              {
+                taskStatements.map((task) => (
+                  task && (
+                    <span>
+                      {task.id} {task.title}
+                    </span>
+                  )
+                ))
+              }
+            </dd>
+          </div>
+          <div>
+            <dt>Knowledge</dt>
+            <dd>{question.knowledge.slice(0, 4).join("; ")}</dd>
+          </div>
+          <div>
+            <dt>Skills</dt>
+            <dd>{question.skills.slice(0, 4).join("; ")}</dd>
+          </div>
+        </dl>
+      </aside>
+
+      <div class="static-choice-list">
+        {
+          question.choices.map((choice) => (
+            <section class={choice.isCorrect ? "static-choice is-correct" : "static-choice"}>
+              <header>
+                <span class="choice-letter">{choice.id}</span>
+                {choice.isCorrect && <strong>Correct answer</strong>}
+              </header>
+              <p set:html={formatExamText(choice.text)} />
+              <small set:html={formatExamText(choice.explanation)} />
+            </section>
+          ))
+        }
+      </div>
+    </section>
+  </article>
+</SiteLayout>

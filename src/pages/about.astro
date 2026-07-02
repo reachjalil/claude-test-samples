@@ -1,0 +1,94 @@
+---
+import { examBank } from "../data/examBank";
+import { studyGuide } from "../data/studyGuide";
+import SiteLayout from "../layouts/SiteLayout.astro";
+
+const { totalQuestions, durationMinutes } = examBank.settings;
+---
+
+<SiteLayout
+  title="About"
+  description="About Sample Claude Exams, the independent practice platform for Claude learning readiness."
+>
+  <section class="exam-page">
+    <header class="page-intro">
+      <span class="exam-page-eyebrow">About the platform</span>
+      <h1 class="exam-page-title">A focused practice lab for Claude readiness</h1>
+      <p class="section-lede">
+        Sample Claude Exams helps learners rehearse Claude architecture concepts in a realistic
+        exam loop. It is built as a companion to practical AI enablement work: learn the concepts,
+        test recall under pressure, then use the score breakdown to choose the next coaching topic.
+      </p>
+    </header>
+
+    <section class="guide-overview-panel" aria-labelledby="about-purpose">
+      <header class="guide-overview-header">
+        <div>
+          <p class="source-kicker">What it includes</p>
+          <h2 id="about-purpose">Practice before the work gets real</h2>
+          <p>
+            The platform covers agentic architecture, tool design, MCP integration, Claude Code
+            workflows, structured output, context management, reliability, and provenance. It is
+            useful for individual preparation and for managers who want a lightweight team-readiness
+            signal before project delivery.
+          </p>
+        </div>
+        <dl class="guide-facts">
+          <div>
+            <dt>Questions</dt>
+            <dd>{totalQuestions}</dd>
+          </div>
+          <div>
+            <dt>Duration</dt>
+            <dd>{durationMinutes} min</dd>
+          </div>
+          <div>
+            <dt>Pass benchmark</dt>
+            <dd>{studyGuide.exam.scoring.passingScore}</dd>
+          </div>
+        </dl>
+      </header>
+
+      <div class="scope-grid">
+        <section>
+          <h3>For learners</h3>
+          <ul>
+            <li>Practice a full sample exam in timed or untimed mode.</li>
+            <li>Review every answer with explanations and study-guide mappings.</li>
+            <li>Use flashcards and targeted drills after a weak-domain result.</li>
+          </ul>
+        </section>
+        <section>
+          <h3>For teams</h3>
+          <ul>
+            <li>Use the exam as a lightweight pre-work or post-workshop check.</li>
+            <li>Map weak areas to follow-up coaching or implementation exercises.</li>
+            <li>Keep practice progress local to the learner's browser.</li>
+          </ul>
+        </section>
+        <section>
+          <h3>Boundaries</h3>
+          <ul>
+            <li>This site is not operated by Anthropic.</li>
+            <li>It does not sell, grant, or verify any official credential.</li>
+            <li>It should not be treated as a copy of any live certification exam.</li>
+          </ul>
+        </section>
+      </div>
+    </section>
+
+    <section class="section-block">
+      <div class="cta-band">
+        <h2>Start with a baseline, then build the learning plan</h2>
+        <p>
+          Take the sample exam, review the topic breakdown, and use the study path to close gaps
+          before hands-on AI delivery work.
+        </p>
+        <div class="hero-actions">
+          <a class="hero-cta is-primary" href="/exam">Start practice exam</a>
+          <a class="hero-cta is-secondary" href="/privacy">Review privacy policy</a>
+        </div>
+      </div>
+    </section>
+  </section>
+</SiteLayout>

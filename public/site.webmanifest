@@ -1,0 +1,16 @@
+{
+  "name": "Sample Claude Exams",
+  "short_name": "Claude Exams",
+  "description": "Independent sample Claude exam practice platform.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#030712",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "64x64",
+      "type": "image/svg+xml"
+    }
+  ]
+}
